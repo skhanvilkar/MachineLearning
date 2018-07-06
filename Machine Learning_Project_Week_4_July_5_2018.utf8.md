@@ -123,7 +123,7 @@ predictionRF <- predict(modFitRF, dt_testing, type = "class")
 predictionRF
 ```
 ## Step 10 Submission File
-As can be seen from the confusion matrix the Random Forest model is very accurate, about 99%. Because of that we could expect nearly all of the submitted test cases to be correct. It turned out they were all correct. Prepare the submission.
+Prepare the submission.
 
 ```r
 pml_write_files = function(x){
@@ -138,5 +138,5 @@ pml_write_files(predictionRF)
 ```
 
 # **Conclusion:**  
-Using model selection strategy, we found out that among all variables weight and quarter mile time (acceleration) have significant impact in quantifying the difference of MPG between automatic and manual transmission cars.
+As can be seen from the confusion matrix the Random Forest model is very accurate, about 99%. Because of that we could expect nearly all of the submitted test cases to be correct. It turned out they were all correct.
 

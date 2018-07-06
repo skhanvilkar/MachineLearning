@@ -155,8 +155,7 @@ library(RGtk2)
 library(rattle)
 ##install.packages(&quot;rpart.plot&quot;)
 library(rpart.plot)
-##install.packages(&quot;randomForest&quot;)
-library(randomForest)
+#library(randomForest)
 ##install.packages(&quot;munsell&quot;)
 ##sessionInfo()
 install.packages(&quot;fancyRpartPlot&quot;)
@@ -200,33 +199,44 @@ fancyRpartPlot(modFitDT)</code></pre>
 prediction &lt;- predict(modFitDT, testing, type = &quot;class&quot;)
 confusionMatrix(prediction, testing$classe)</code></pre>
 </div>
-<div id="step-6-predicting-with-the-random-forest-model" class="section level2">
-<h2>Step 6 Predicting with the Random Forest Model</h2>
+<div id="step-6-building-the-random-forest-model" class="section level2">
+<h2>Step 6 Building the Random Forest Model</h2>
+<p>Using random forest, the out of sample error should be small. The error will be estimated using the 40% testing sample. We should expect an error estimate of &lt; 3%.</p>
+<pre class="r"><code>set.seed(12345)
+modFitRF &lt;- randomForest(classe ~ ., data = training, ntree = 1000)</code></pre>
+</div>
+<div id="step-7-predicting-with-the-random-forest-model" class="section level2">
+<h2>Step 7 Predicting with the Random Forest Model</h2>
 <pre class="r"><code>prediction &lt;- predict(modFitRF, testing, type = &quot;class&quot;)
 confusionMatrix(prediction, testing$classe)</code></pre>
 </div>
-<div id="step-7-predicting-on-the-testing-data-pml-testing.csv-decision-tree-prediction" class="section level2">
-<h2>Step 7 Predicting on the Testing Data (pml-testing.csv) ~ Decision Tree Prediction</h2>
+<div id="step-8-predicting-on-the-testing-data-pml-testing.csv-decision-tree-prediction" class="section level2">
+<h2>Step 8 Predicting on the Testing Data (pml-testing.csv) ~ Decision Tree Prediction</h2>
 <pre class="r"><code>predictionDT &lt;- predict(modFitDT, dt_testing, type = &quot;class&quot;)
 predictionDT</code></pre>
 <p>You can observe that all the variables now are statistically significant. This model explains 84% of the variance in miles per gallon (mpg). Now when we read the coefficient for am, we say that, on average, manual transmission cars have 2.94 MPGs more than automatic transmission cars. However this effect was much higher than when we did not adjust for weight and qsec.</p>
 </div>
-<div id="step-8-random-forest-prediction" class="section level2">
-<h2>Step 8 Random Forest Prediction</h2>
+<div id="step-9-random-forest-prediction" class="section level2">
+<h2>Step 9 Random Forest Prediction</h2>
 <pre class="r"><code>predictionRF &lt;- predict(modFitRF, dt_testing, type = &quot;class&quot;)
 predictionRF</code></pre>
 </div>
-<div id="appendix" class="section level2">
-<h2><strong>Appendix</strong></h2>
-</div>
-<div id="figure-1" class="section level1">
-<h1>Figure 1:</h1>
-<pre><code>## Warning in abline(finalfit): only using the first two of 4 regression
-## coefficients</code></pre>
+<div id="step-10-submission-file" class="section level2">
+<h2>Step 10 Submission File</h2>
+<p>Prepare the submission.</p>
+<pre class="r"><code>pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0(&quot;problem_id_&quot;,i,&quot;.txt&quot;)
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+pml_write_files(predictionRF)</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1><strong>Conclusion:</strong></h1>
-<p>Using model selection strategy, we found out that among all variables weight and quarter mile time (acceleration) have significant impact in quantifying the difference of MPG between automatic and manual transmission cars.</p>
+<p>As can be seen from the confusion matrix the Random Forest model is very accurate, about 99%. Because of that we could expect nearly all of the submitted test cases to be correct. It turned out they were all correct.</p>
 </div>
 
 
